@@ -128,7 +128,7 @@ body {
 }
 
 /* Card Hover Animations */
-.summary-card:hover, .table-card:hover, .entry-form:hover, .spotlight:hover {
+.summary-card:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: var(--shadow-lg);
   border-color: rgba(37, 99, 235, 0.3);
@@ -156,6 +156,10 @@ body {
 
 .grid-full { grid-column: span 12; display: flex; flex-direction: column; }
 .grid-half { grid-column: span 6; display: flex; flex-direction: column; }
+.grid-half > * { height: 100%; display: flex; flex-direction: column; }
+
+/* Let inner form/content expand if needed */
+.grid-half > * > .stack { flex-grow: 1; }
 
 /* Summary Cards (Top 3) */
 .card-grid {
@@ -330,7 +334,10 @@ input:focus, select:focus, textarea:focus {
   transform: translateY(-2px);
 }
 
-textarea { min-height: 100px; resize: vertical; }
+textarea { 
+  min-height: 180px; 
+  resize: vertical; 
+}
 
 /* Spotlights: Category Manager, Monthly Flow, Category Breakdown */
 .spotlight {
@@ -351,6 +358,37 @@ textarea { min-height: 100px; resize: vertical; }
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.color-preview {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 /* Pills & Tags */
@@ -554,6 +592,37 @@ textarea { min-height: 100px; resize: vertical; }
   animation: fadeIn 0.5s ease-out;
 }
 
+.toast-stack {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 260px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: #ffffff;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.92rem;
+  font-weight: 600;
+  animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+
 /* Responsive Grid Adjustments */
 @media (max-width: 1024px) {
   .bento-grid { display: flex; flex-direction: column; }
@@ -565,4 +634,7 @@ textarea { min-height: 100px; resize: vertical; }
   .hero { align-items: flex-start; flex-direction: column; gap: 16px; }
   .field-grid { grid-template-columns: 1fr; }
   .card-grid { grid-template-columns: 1fr; }
+  .toast-stack { left: 16px; right: 16px; top: 16px; }
+  .toast { min-width: 0; max-width: none; width: 100%; }
+  .category-row { align-items: flex-start; flex-direction: column; }
 }

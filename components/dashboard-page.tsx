@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CategoryManager } from "@/components/category-manager";
+import { useToast } from "@/components/toast-provider";
 import { EntryForm } from "@/components/entry-form";
 import { EntriesTable } from "@/components/entries-table";
 import { MonthlyOverview } from "@/components/monthly-overview";
@@ -21,13 +22,22 @@ type DashboardPageProps = {
 };
 
 export function DashboardPage({ initialData }: DashboardPageProps) {
+  const { showToast } = useToast();
   const [refreshing, setRefreshing] = useState(false);
 
   async function signOut() {
     setRefreshing(true);
-    await fetch("/api/summary", {
+    const response = await fetch("/api/summary", {
       method: "DELETE"
     });
+
+    if (!response.ok) {
+      showToast("Could not sign out.", "error");
+      setRefreshing(false);
+      return;
+    }
+
+    showToast("Signed out successfully.");
     window.location.href = "/auth";
   }
 
@@ -58,9 +68,11 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
 
       <div className="bento-grid">
         <div className="grid-full"><SummaryCards summary={initialData.summary} /></div>
-        <div className="grid-half"><EntryForm categories={initialData.categories} /></div>
-        <div className="grid-half"><CategoryManager /></div>
         <div className="grid-full"><EntriesTable entries={initialData.entries} /></div>
+        
+        <div className="grid-half"><EntryForm categories={initialData.categories} /></div>
+        <div className="grid-half"><CategoryManager categories={initialData.categories} /></div>
+        
         <div className="grid-half"><MonthlyOverview summary={initialData.summary} /></div>
         <div className="grid-half"><TopCategories summary={initialData.summary} /></div>
       </div>

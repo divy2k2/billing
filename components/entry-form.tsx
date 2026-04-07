@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useToast } from "@/components/toast-provider";
 import type { Category, EntryType } from "@/lib/types";
 import { isoDate } from "@/lib/utils";
 
 export function EntryForm({ categories }: { categories: Category[] }) {
+  const { showToast } = useToast();
   const [type, setType] = useState<EntryType>("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
@@ -42,12 +44,15 @@ export function EntryForm({ categories }: { categories: Category[] }) {
     const payload = await response.json();
 
     if (!response.ok) {
-      setStatus(payload.error ?? "Could not save the transaction.");
+      const nextMessage = payload.error ?? "Could not save the transaction.";
+      setStatus(nextMessage);
+      showToast(nextMessage, "error");
       setSubmitting(false);
       return;
     }
 
     setStatus("Transaction saved. Refreshing dashboard...");
+    showToast("Transaction saved successfully.");
     window.location.reload();
   }
 

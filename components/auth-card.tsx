@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/toast-provider";
 
 type AuthCardProps = {
   adminEmail: string;
@@ -9,6 +10,7 @@ type AuthCardProps = {
 
 export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
   const [email, setEmail] = useState("");
+  const { showToast } = useToast();
   const [message, setMessage] = useState(
     initialError || "Sign in with the admin email to open this private dashboard."
   );
@@ -18,12 +20,16 @@ export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
     event.preventDefault();
 
     if (!adminEmail) {
-      setMessage("Admin email is not configured yet. Set ADMIN_EMAIL in your environment first.");
+      const nextMessage = "Admin email is not configured yet. Set ADMIN_EMAIL in your environment first.";
+      setMessage(nextMessage);
+      showToast(nextMessage, "error");
       return;
     }
 
     if (email.trim().toLowerCase() !== adminEmail.trim().toLowerCase()) {
-      setMessage(`Only the admin account (${adminEmail}) can sign in to this workspace.`);
+      const nextMessage = `Only the admin account (${adminEmail}) can sign in to this workspace.`;
+      setMessage(nextMessage);
+      showToast(nextMessage, "error");
       return;
     }
 
@@ -41,10 +47,13 @@ export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
 
     setLoading(false);
     if (!response.ok) {
-      setMessage(payload.error ?? "Could not sign in.");
+      const nextMessage = payload.error ?? "Could not sign in.";
+      setMessage(nextMessage);
+      showToast(nextMessage, "error");
       return;
     }
 
+    showToast("Signed in successfully.");
     window.location.href = "/";
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useToast } from "@/components/toast-provider";
 import type { Entry } from "@/lib/types";
 import { currency } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ function entryCategory(entry: Entry) {
 }
 
 export function EntriesTable({ entries }: { entries: Entry[] }) {
+  const { showToast } = useToast();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function handleDelete(id: string) {
@@ -22,10 +24,12 @@ export function EntriesTable({ entries }: { entries: Entry[] }) {
     });
 
     if (response.ok) {
+      showToast("Transaction deleted successfully.");
       window.location.reload();
       return;
     }
 
+    showToast("Could not delete transaction.", "error");
     setBusyId(null);
   }
 
