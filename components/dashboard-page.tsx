@@ -40,8 +40,8 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
     <main className="page-shell">
       <section className="hero">
         <div>
-          <p className="eyebrow">Cashflow Pilot</p>
-          <h1>Money in, money out, fully visible.</h1>
+          <p className="eyebrow">Lilavati Enterprise</p>
+          <h1>Financial Dashboard.</h1>
           <p className="muted">
             Logged in as {initialData.user.email ?? "your account"} with the private admin session.
           </p>
@@ -56,17 +56,13 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
         </div>
       </section>
 
-      <div className="dashboard-grid">
-        <div className="left-stack">
-          <SummaryCards summary={initialData.summary} />
-          <EntriesTable entries={initialData.entries} />
-        </div>
-        <div className="right-stack">
-          <EntryForm categories={initialData.categories} />
-          <CategoryManager />
-          <MonthlyOverview summary={initialData.summary} />
-          <TopCategories summary={initialData.summary} />
-        </div>
+      <div className="bento-grid">
+        <div className="grid-full"><SummaryCards summary={initialData.summary} /></div>
+        <div className="grid-half"><EntryForm categories={initialData.categories} /></div>
+        <div className="grid-half"><CategoryManager /></div>
+        <div className="grid-full"><EntriesTable entries={initialData.entries} /></div>
+        <div className="grid-half"><MonthlyOverview summary={initialData.summary} /></div>
+        <div className="grid-half"><TopCategories summary={initialData.summary} /></div>
       </div>
     </main>
   );

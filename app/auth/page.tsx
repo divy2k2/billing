@@ -21,8 +21,8 @@ export default async function AuthPage({ searchParams }: AuthPageProps) {
   return (
     <main className="auth-page">
       <div className="auth-hero">
-        <p className="eyebrow">Personal Finance Workspace</p>
-        <h1>Track every incoming and outgoing amount in one place.</h1>
+        <p className="eyebrow">Lilavati Enterprise</p>
+        <h1>Smart Money Tracker.</h1>
         <p className="muted">
           One private admin account manages the full finance workspace. Allowed admin email:
           {" "}
