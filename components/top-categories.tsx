@@ -7,12 +7,12 @@ export function TopCategories({ summary }: { summary: DashboardSummary }) {
   return (
     <section className="spotlight">
       <div className="toolbar">
-        <h2>Category Breakdown</h2>
-        <span className="muted">{summary.byCategory.length} categories</span>
+        <h2>Category Insights</h2>
+        <span className="muted">{summary.byCategory.length} categories tracked</span>
       </div>
       <div className="split-bars">
         {summary.byCategory.length === 0 ? (
-          <p className="muted">Create categories and add entries to populate this section.</p>
+          <p className="muted">Create categories and add records to reveal spending and revenue patterns.</p>
         ) : (
           summary.byCategory.slice(0, 8).map((item) => (
             <div className="split-row" key={`${item.type}-${item.category}`}>

@@ -11,7 +11,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
   const [name, setName] = useState("");
   const [type, setType] = useState<EntryType>("expense");
   const [color, setColor] = useState(palette[0]);
-  const [status, setStatus] = useState("Need a new category? Add it here.");
+  const [status, setStatus] = useState("Create a category to keep your records organized.");
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -31,14 +31,14 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     const payload = await response.json();
 
     if (!response.ok) {
-      const nextMessage = payload.error ?? "Could not create category.";
+      const nextMessage = payload.error ?? "We couldn't create that category.";
       setStatus(nextMessage);
       showToast(nextMessage, "error");
       setSubmitting(false);
       return;
     }
 
-    setStatus("Category created. Refreshing dashboard...");
+    setStatus("Category created. Refreshing your workspace...");
     showToast("Category created successfully.");
     window.location.reload();
   }
@@ -53,35 +53,35 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     const payload = await response.json();
 
     if (!response.ok) {
-      showToast(payload.error ?? "Could not delete category.", "error");
+      showToast(payload.error ?? "We couldn't delete that category.", "error");
       setDeletingId(null);
       return;
     }
 
-    showToast(`Category "${category.name}" deleted successfully.`);
+    showToast(`Category "${category.name}" was deleted.`);
     window.location.reload();
   }
 
   return (
     <section className="spotlight">
       <div className="toolbar">
-        <h2>Category Manager</h2>
-        <span className="muted">Income and expense groups</span>
+        <h2>Category Library</h2>
+        <span className="muted">Organize revenue and expense groupings</span>
       </div>
       <form className="stack" onSubmit={handleSubmit}>
         <div className="field-grid">
           <div className="field">
-            <label htmlFor="category-name">Name</label>
+            <label htmlFor="category-name">Category name</label>
             <input
               id="category-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Freelance, Fuel, Rent..."
+              placeholder="Consulting, Travel, Rent..."
               required
             />
           </div>
           <div className="field">
-            <label htmlFor="category-type">Type</label>
+            <label htmlFor="category-type">Category type</label>
             <select
               id="category-type"
               value={type}
@@ -92,7 +92,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
             </select>
           </div>
           <div className="field full">
-            <label htmlFor="category-color">Color</label>
+            <label htmlFor="category-color">Accent color</label>
             <div className="color-picker-row">
               <span className="color-preview" style={{ background: color }} aria-hidden="true" />
               <select
@@ -110,7 +110,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
           </div>
         </div>
         <button className="button primary" type="submit" disabled={submitting}>
-          {submitting ? "Creating..." : "Create category"}
+          {submitting ? "Creating..." : "Add category"}
         </button>
         <p className="status">{status}</p>
       </form>
@@ -127,7 +127,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
               onClick={() => handleDelete(category)}
               disabled={deletingId === category.id}
             >
-              {deletingId === category.id ? "Deleting..." : "Delete"}
+              {deletingId === category.id ? "Deleting..." : "Remove"}
             </button>
           </div>
         ))}

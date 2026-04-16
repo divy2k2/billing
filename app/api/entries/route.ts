@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server-data";
+import { entrySchema, formatZodError } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -24,25 +25,23 @@ export async function POST(request: Request) {
   try {
     const { supabase } = await requireAdmin();
     const body = await request.json();
+    const parsed = entrySchema.safeParse(body);
 
-    if (!body.title || !body.category_id || !body.type || !body.occurred_on) {
-      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodError(parsed.error) }, { status: 400 });
     }
 
-    const amount = Number(body.amount);
-    if (!Number.isFinite(amount) || amount <= 0) {
-      return NextResponse.json({ error: "Amount must be greater than zero." }, { status: 400 });
-    }
+    const amount = Number(parsed.data.amount);
 
     const { data, error } = await supabase
       .from("entries")
       .insert({
-        title: body.title,
-        notes: body.notes || null,
+        title: parsed.data.title,
+        notes: parsed.data.notes || null,
         amount,
-        type: body.type,
-        occurred_on: body.occurred_on,
-        category_id: body.category_id
+        type: parsed.data.type,
+        occurred_on: parsed.data.occurred_on,
+        category_id: parsed.data.category_id
       })
       .select("id,title,notes,amount,type,occurred_on,category_id,created_at")
       .single();

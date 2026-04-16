@@ -1,9 +1,8 @@
 import { cookies } from "next/headers";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { getAdminEmail, getAdminPassword, isAdminEmail } from "@/lib/admin";
 
-const SESSION_COOKIE_NAME = "cashflow-admin-session";
-const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
+export const SESSION_COOKIE_NAME = "cashflow-admin-session";
+export const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
 type SessionPayload = {
   email: string;
@@ -18,21 +17,33 @@ function encodePayload(payload: SessionPayload) {
   return Buffer.from(JSON.stringify(payload)).toString("base64url");
 }
 
-function signValue(value: string) {
-  return createHmac("sha256", getSessionSecret()).update(value).digest("base64url");
+function encodeBase64Url(buffer: ArrayBuffer) {
+  return Buffer.from(buffer).toString("base64url");
 }
 
-function createSessionToken(email: string) {
+async function signValue(value: string) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(getSessionSecret()),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value));
+  return encodeBase64Url(signature);
+}
+
+async function createSessionToken(email: string) {
   const payload: SessionPayload = {
     email,
     exp: Date.now() + SESSION_MAX_AGE * 1000
   };
   const encoded = encodePayload(payload);
-  const signature = signValue(encoded);
+  const signature = await signValue(encoded);
   return `${encoded}.${signature}`;
 }
 
-function parseSessionToken(token?: string) {
+export async function parseSessionToken(token?: string) {
   if (!token) {
     return null;
   }
@@ -42,10 +53,8 @@ function parseSessionToken(token?: string) {
     return null;
   }
 
-  const expectedSignature = signValue(encoded);
-  const validSignature =
-    signature.length === expectedSignature.length &&
-    timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+  const expectedSignature = await signValue(encoded);
+  const validSignature = signature === expectedSignature;
 
   if (!validSignature) {
     return null;
@@ -68,7 +77,7 @@ export async function createAdminSessionResponse() {
   const response = Response.json({ success: true });
   response.headers.append(
     "Set-Cookie",
-    `${SESSION_COOKIE_NAME}=${createSessionToken(getAdminEmail())}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE}`
+    `${SESSION_COOKIE_NAME}=${await createSessionToken(getAdminEmail())}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_MAX_AGE}`
   );
   return response;
 }

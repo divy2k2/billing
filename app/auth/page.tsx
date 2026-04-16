@@ -20,16 +20,23 @@ export default async function AuthPage({ searchParams }: AuthPageProps) {
 
   return (
     <main className="auth-page">
-      <div className="auth-hero">
-        <p className="eyebrow">Lilavanti Enterprise</p>
-        <h1>Smart Money Tracker.</h1>
-        <p className="muted">
-          One private admin account manages the full finance workspace. Allowed admin email:
-          {" "}
-          <strong>{adminEmail || "set ADMIN_EMAIL first"}</strong>
-        </p>
+      <div className="auth-backdrop" aria-hidden="true">
+        <div className="auth-glow auth-glow-a" />
+        <div className="auth-glow auth-glow-b" />
+        <div className="auth-grid" />
       </div>
-      <AuthCard adminEmail={adminEmail} initialError={params?.error} />
+      <section className="auth-stage">
+        <div className="auth-hero">
+          <p className="eyebrow">Lilavanti Enterprise</p>
+          <h1>Finance, Refined.</h1>
+          <p className="muted">
+            This workspace is reserved for a single administrator. Authorized email:
+            {" "}
+            <strong>{adminEmail || "configure ADMIN_EMAIL first"}</strong>
+          </p>
+        </div>
+        <AuthCard adminEmail={adminEmail} initialError={params?.error} />
+      </section>
     </main>
   );
 }

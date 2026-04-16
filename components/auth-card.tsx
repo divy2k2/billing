@@ -12,7 +12,7 @@ export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
   const [email, setEmail] = useState("");
   const { showToast } = useToast();
   const [message, setMessage] = useState(
-    initialError || "Sign in with the admin email to open this private dashboard."
+    initialError || "Sign in with the authorized administrator email to access the workspace."
   );
   const [loading, setLoading] = useState(false);
 
@@ -20,21 +20,21 @@ export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
     event.preventDefault();
 
     if (!adminEmail) {
-      const nextMessage = "Admin email is not configured yet. Set ADMIN_EMAIL in your environment first.";
+      const nextMessage = "The administrator email is not configured yet. Add ADMIN_EMAIL to your environment to continue.";
       setMessage(nextMessage);
       showToast(nextMessage, "error");
       return;
     }
 
     if (email.trim().toLowerCase() !== adminEmail.trim().toLowerCase()) {
-      const nextMessage = `Only the admin account (${adminEmail}) can sign in to this workspace.`;
+      const nextMessage = `Access is limited to the authorized administrator account (${adminEmail}).`;
       setMessage(nextMessage);
       showToast(nextMessage, "error");
       return;
     }
 
     setLoading(true);
-    setMessage("Signing in...");
+    setMessage("Signing you in...");
 
     const response = await fetch("/api/auth/login", {
       method: "POST",
@@ -47,34 +47,39 @@ export function AuthCard({ adminEmail, initialError }: AuthCardProps) {
 
     setLoading(false);
     if (!response.ok) {
-      const nextMessage = payload.error ?? "Could not sign in.";
+      const nextMessage = payload.error ?? "We couldn't complete sign-in.";
       setMessage(nextMessage);
       showToast(nextMessage, "error");
       return;
     }
 
-    showToast("Signed in successfully.");
+    showToast("Welcome back.");
     window.location.href = "/";
   }
 
   return (
     <section className="auth-card panel">
-      <h2>Open your dashboard</h2>
-      <p className="muted">Only one admin account is allowed: {adminEmail || "set ADMIN_EMAIL first"}.</p>
+      <div className="auth-card-header">
+        <span className="auth-badge">Private Finance Workspace</span>
+        <h2>Access the admin workspace</h2>
+        <p className="muted">
+          Access is reserved for one administrator account: {adminEmail || "configure ADMIN_EMAIL first"}.
+        </p>
+      </div>
       <form className="stack" onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="email">Email address</label>
+          <label htmlFor="email">Work email</label>
           <input
             id="email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder={adminEmail || "admin@example.com"}
+            placeholder={adminEmail || "admin@company.com"}
             required
           />
         </div>
-        <button className="button primary" type="submit" disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
+        <button className="button primary shimmer-button" type="submit" disabled={loading}>
+          {loading ? "Signing in..." : "Continue"}
         </button>
         <p className="status">{message}</p>
       </form>

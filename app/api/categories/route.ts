@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/server-data";
+import { categorySchema, formatZodError } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -23,13 +24,18 @@ export async function POST(request: Request) {
   try {
     const { supabase } = await requireAdmin();
     const body = await request.json();
+    const parsed = categorySchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: formatZodError(parsed.error) }, { status: 400 });
+    }
 
     const { data, error } = await supabase
       .from("categories")
       .insert({
-        name: body.name,
-        type: body.type,
-        color: body.color ?? "#0f766e"
+        name: parsed.data.name,
+        type: parsed.data.type,
+        color: parsed.data.color
       })
       .select("id,name,type,color,created_at")
       .single();

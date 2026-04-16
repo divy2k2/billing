@@ -10,12 +10,12 @@ export function MonthlyOverview({ summary }: { summary: DashboardSummary }) {
   return (
     <section className="spotlight">
       <div className="toolbar">
-        <h2>Monthly Flow</h2>
-        <span className="muted">{summary.monthly.length} month(s)</span>
+        <h2>Monthly Performance</h2>
+        <span className="muted">{summary.monthly.length} month(s) tracked</span>
       </div>
       <div className="chart">
         {summary.monthly.length === 0 ? (
-          <p className="muted">Add your first transactions to see monthly trends.</p>
+          <p className="muted">Add your first records to unlock monthly performance trends.</p>
         ) : (
           summary.monthly.map((item) => (
             <div className="chart-row" key={item.month}>

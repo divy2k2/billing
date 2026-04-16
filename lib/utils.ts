@@ -20,3 +20,18 @@ export function monthLabel(value: string) {
 export function cn(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
 }
+
+export function parseIsoDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, (month ?? 1) - 1, day ?? 1));
+}
+
+export function dayLabel(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short"
+  }).format(parseIsoDate(value));
+}
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}

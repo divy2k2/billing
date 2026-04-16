@@ -27,11 +27,25 @@ export type DashboardSummary = {
   expense: number;
   balance: number;
   savingsRate: number;
+  monthlyIncome: number;
+  monthlyExpense: number;
   monthly: Array<{
     month: string;
     income: number;
     expense: number;
   }>;
+  weeklyTrend: Array<{
+    date: string;
+    label: string;
+    currentNet: number;
+    previousNet: number;
+  }>;
+  weekComparison: {
+    currentIncome: number;
+    currentExpense: number;
+    previousIncome: number;
+    previousExpense: number;
+  };
   byCategory: Array<{
     category: string;
     total: number;

@@ -2,6 +2,7 @@ import { getAdminEmail } from "@/lib/admin";
 import { getAdminSession } from "@/lib/session";
 import { createSupabaseAdminClient } from "@/lib/supabase-admin";
 import type { Category, DashboardSummary, Entry } from "@/lib/types";
+import { dayLabel, isoDate, parseIsoDate } from "@/lib/utils";
 
 function normalizeMoney(value: number | string | null) {
   return Number(value ?? 0);
@@ -58,13 +59,21 @@ export async function fetchDashboardData() {
 
   const entries = (entriesResponse.data ?? []) as Entry[];
   const categories = (categoriesResponse.data ?? []) as Category[];
+  const now = parseIsoDate(isoDate());
+  const thisMonthKey = isoDate().slice(0, 7);
+  const dayMs = 24 * 60 * 60 * 1000;
+  const currentWeekStart = new Date(now.getTime() - 6 * dayMs);
+  const previousWeekStart = new Date(now.getTime() - 13 * dayMs);
+  const previousWeekEnd = new Date(now.getTime() - 7 * dayMs);
 
   const summary = entries.reduce(
     (acc, entry) => {
+      const amount = normalizeMoney(entry.amount);
+
       if (entry.type === "income") {
-        acc.income += normalizeMoney(entry.amount);
+        acc.income += amount;
       } else {
-        acc.expense += normalizeMoney(entry.amount);
+        acc.expense += amount;
       }
 
       const month = entry.occurred_on.slice(0, 7);
@@ -75,12 +84,20 @@ export async function fetchDashboardData() {
       };
 
       if (entry.type === "income") {
-        monthRow.income += normalizeMoney(entry.amount);
+        monthRow.income += amount;
       } else {
-        monthRow.expense += normalizeMoney(entry.amount);
+        monthRow.expense += amount;
       }
 
       acc.monthlyMap.set(month, monthRow);
+
+      if (month === thisMonthKey) {
+        if (entry.type === "income") {
+          acc.monthlyIncome += amount;
+        } else {
+          acc.monthlyExpense += amount;
+        }
+      }
 
       const category = normalizeCategory(entry);
       const categoryName = category?.name ?? "Uncategorized";
@@ -93,15 +110,44 @@ export async function fetchDashboardData() {
         color: categoryColor
       };
 
-      categoryRow.total += normalizeMoney(entry.amount);
+      categoryRow.total += amount;
       acc.categoryMap.set(categoryKey, categoryRow);
+
+      const entryDate = parseIsoDate(entry.occurred_on);
+      const entryTime = entryDate.getTime();
+      if (entryTime >= currentWeekStart.getTime() && entryTime <= now.getTime()) {
+        const dayKey = entry.occurred_on;
+        const dayRow = acc.currentWeekMap.get(dayKey) ?? { income: 0, expense: 0 };
+        dayRow[entry.type] += amount;
+        acc.currentWeekMap.set(dayKey, dayRow);
+        acc.weekComparison[entry.type === "income" ? "currentIncome" : "currentExpense"] += amount;
+      } else if (
+        entryTime >= previousWeekStart.getTime() &&
+        entryTime <= previousWeekEnd.getTime()
+      ) {
+        const dayKey = entry.occurred_on;
+        const dayRow = acc.previousWeekMap.get(dayKey) ?? { income: 0, expense: 0 };
+        dayRow[entry.type] += amount;
+        acc.previousWeekMap.set(dayKey, dayRow);
+        acc.weekComparison[entry.type === "income" ? "previousIncome" : "previousExpense"] += amount;
+      }
 
       return acc;
     },
     {
       income: 0,
       expense: 0,
+      monthlyIncome: 0,
+      monthlyExpense: 0,
       monthlyMap: new Map<string, { month: string; income: number; expense: number }>(),
+      currentWeekMap: new Map<string, { income: number; expense: number }>(),
+      previousWeekMap: new Map<string, { income: number; expense: number }>(),
+      weekComparison: {
+        currentIncome: 0,
+        currentExpense: 0,
+        previousIncome: 0,
+        previousExpense: 0
+      },
       categoryMap: new Map<
         string,
         { category: string; total: number; type: "income" | "expense"; color: string }
@@ -109,15 +155,35 @@ export async function fetchDashboardData() {
     }
   );
 
+  const weeklyTrend = Array.from({ length: 7 }, (_, index) => {
+    const currentDate = new Date(currentWeekStart.getTime() + index * dayMs);
+    const previousDate = new Date(previousWeekStart.getTime() + index * dayMs);
+    const currentKey = isoDate(currentDate);
+    const previousKey = isoDate(previousDate);
+    const currentDay = summary.currentWeekMap.get(currentKey) ?? { income: 0, expense: 0 };
+    const previousDay = summary.previousWeekMap.get(previousKey) ?? { income: 0, expense: 0 };
+
+    return {
+      date: currentKey,
+      label: dayLabel(currentKey),
+      currentNet: currentDay.income - currentDay.expense,
+      previousNet: previousDay.income - previousDay.expense
+    };
+  });
+
   const dashboardSummary: DashboardSummary = {
     income: summary.income,
     expense: summary.expense,
     balance: summary.income - summary.expense,
+    monthlyIncome: summary.monthlyIncome,
+    monthlyExpense: summary.monthlyExpense,
     savingsRate:
       summary.income === 0
         ? 0
         : Number((((summary.income - summary.expense) / summary.income) * 100).toFixed(1)),
     monthly: [...summary.monthlyMap.values()].sort((a, b) => a.month.localeCompare(b.month)),
+    weeklyTrend,
+    weekComparison: summary.weekComparison,
     byCategory: [...summary.categoryMap.values()].sort((a, b) => b.total - a.total)
   };
 

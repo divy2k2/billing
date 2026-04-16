@@ -28,7 +28,7 @@ function getErrorMessage(error: unknown) {
     }
   }
 
-  return "Unknown workspace error.";
+  return "Unknown workspace issue.";
 }
 
 export default async function HomePage() {
@@ -39,7 +39,7 @@ export default async function HomePage() {
   }
 
   if (!isAdminEmail(user.email)) {
-    redirect("/auth?error=This workspace is restricted to the admin account only.");
+    redirect("/auth?error=This workspace is available to the designated administrator only.");
   }
 
   let data;
@@ -50,6 +50,7 @@ export default async function HomePage() {
     redirect(
       `/auth?error=${encodeURIComponent(
         `Could not load workspace data: ${getErrorMessage(error)}`
+        
       )}`
     );
   }
