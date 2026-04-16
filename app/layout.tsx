@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lilavati Enterprise",
-  description: "Advanced money tracking dashboard for Lilavati Enterprise."
+  title: "Lilavanti Enterprise",
+  description: "Advanced money tracking dashboard for Lilavanti Enterprise."
 };
 
 export default function RootLayout({

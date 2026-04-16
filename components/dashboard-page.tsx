@@ -50,7 +50,7 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
     <main className="page-shell">
       <section className="hero">
         <div>
-          <p className="eyebrow">Lilavati Enterprise</p>
+          <p className="eyebrow">Lilavanti Enterprise</p>
           <h1>Financial Dashboard.</h1>
           <p className="muted">
             Logged in as {initialData.user.email ?? "your account"} with the private admin session.
