@@ -80,3 +80,4 @@ npm run dev
 - Use Vercel cron later if you want monthly email reports or recurring reminders
 - Add export, recurring entries, attachments, and team accounts as future upgrades
 # tracker
+# billing
