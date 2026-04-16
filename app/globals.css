@@ -530,6 +530,20 @@ textarea {
   border-bottom: none;
 }
 
+.tax-row-input {
+  align-items: flex-end;
+}
+
+.tax-row-input label {
+  margin: 0;
+}
+
+.tax-row-input input {
+  width: 110px;
+  min-height: 40px;
+  text-align: right;
+}
+
 .tax-note {
   margin: 14px 0 0;
   line-height: 1.5;

@@ -14,6 +14,7 @@ export type Entry = {
   title: string;
   notes: string | null;
   amount: number;
+  gst_rate?: number;
   type: EntryType;
   occurred_on: string;
   category_id: string;

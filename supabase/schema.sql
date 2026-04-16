@@ -1,7 +1,6 @@
 create extension if not exists "pgcrypto";
 
 alter table if exists public.entries drop constraint if exists entries_user_id_fkey;
-alter table if exists public.categories drop constraint if exists categories_user_id_fkey;
 alter table if exists public.entries alter column user_id drop not null;
 alter table if exists public.categories alter column user_id drop not null;
 drop index if exists categories_user_name_type_idx;
@@ -19,15 +18,18 @@ create table if not exists public.categories (
 
 create table if not exists public.entries (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid,
   category_id uuid not null references public.categories (id) on delete restrict,
   title text not null,
   notes text,
   amount numeric(12, 2) not null check (amount > 0),
+  gst_rate numeric(6, 2) not null default 0 check (gst_rate >= 0),
   type text not null check (type in ('income', 'expense')),
   occurred_on date not null,
   created_at timestamptz not null default timezone('utc', now())
 );
+
+alter table if exists public.entries
+  add column if not exists gst_rate numeric(6, 2) not null default 0;
 
 alter table public.categories enable row level security;
 alter table public.entries enable row level security;

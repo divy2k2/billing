@@ -10,21 +10,21 @@ export function EntryForm({ categories }: { categories: Category[] }) {
   const [type, setType] = useState<EntryType>("expense");
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [gstRate, setGstRate] = useState("18");
   const [occurredOn, setOccurredOn] = useState(isoDate());
   const [categoryId, setCategoryId] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState("Create a new financial record.");
   const [submitting, setSubmitting] = useState(false);
   const numericAmount = Number(amount) || 0;
+  const numericGstRate = Math.max(0, Number(gstRate) || 0);
 
   const filteredCategories = useMemo(
     () => categories.filter((category) => category.type === type),
     [categories, type]
   );
-  const gst = numericAmount * 0.18;
-  const vat = numericAmount * 0.05;
+  const gst = numericAmount * (numericGstRate / 100);
   const totalWithGst = numericAmount + gst;
-  const totalWithVat = numericAmount + vat;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,6 +39,7 @@ export function EntryForm({ categories }: { categories: Category[] }) {
       body: JSON.stringify({
         title,
         amount: Number(amount),
+        gst_rate: numericGstRate,
         type,
         occurred_on: occurredOn,
         category_id: categoryId,
@@ -161,21 +162,25 @@ export function EntryForm({ categories }: { categories: Category[] }) {
               <span>Base amount</span>
               <strong>{numericAmount.toFixed(2)}</strong>
             </div>
+            <div className="tax-row tax-row-input">
+              <label htmlFor="gst-rate">GST rate (%)</label>
+              <input
+                id="gst-rate"
+                type="number"
+                min="0"
+                step="0.01"
+                value={gstRate}
+                onChange={(event) => setGstRate(event.target.value)}
+                placeholder="18"
+              />
+            </div>
             <div className="tax-row">
-              <span>GST @ 18%</span>
+              <span>GST @ {numericGstRate.toFixed(2).replace(/\.00$/, "")}%</span>
               <strong>{gst.toFixed(2)}</strong>
             </div>
             <div className="tax-row">
               <span>Total including GST</span>
               <strong>{totalWithGst.toFixed(2)}</strong>
-            </div>
-            <div className="tax-row">
-              <span>VAT @ 5%</span>
-              <strong>{vat.toFixed(2)}</strong>
-            </div>
-            <div className="tax-row">
-              <span>Total including VAT</span>
-              <strong>{totalWithVat.toFixed(2)}</strong>
             </div>
           </div>
           <p className="muted tax-note">

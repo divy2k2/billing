@@ -9,6 +9,12 @@ export const entrySchema = z.object({
     .number()
     .finite("Amount must be a valid number.")
     .min(0, "Amount cannot be negative."),
+  gst_rate: z
+    .coerce
+    .number()
+    .finite("GST rate must be a valid number.")
+    .min(0, "GST rate cannot be negative.")
+    .max(100, "GST rate must be 100 or less."),
   type: z.enum(["income", "expense"]),
   occurred_on: z.string().regex(isoDateRegex, "Date must be in YYYY-MM-DD format."),
   category_id: z.string().trim().min(1, "Category is required."),

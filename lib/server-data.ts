@@ -40,7 +40,7 @@ export async function fetchDashboardData() {
   const [entriesResponse, categoriesResponse] = await Promise.all([
     supabase
       .from("entries")
-      .select("id,title,notes,amount,type,occurred_on,category_id,created_at,category:categories(id,name,type,color)")
+      .select("id,title,notes,amount,gst_rate,type,occurred_on,category_id,created_at,category:categories(id,name,type,color)")
       .order("occurred_on", { ascending: false })
       .limit(50),
     supabase

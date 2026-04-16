@@ -39,11 +39,12 @@ export async function POST(request: Request) {
         title: parsed.data.title,
         notes: parsed.data.notes || null,
         amount,
+        gst_rate: parsed.data.gst_rate,
         type: parsed.data.type,
         occurred_on: parsed.data.occurred_on,
         category_id: parsed.data.category_id
       })
-      .select("id,title,notes,amount,type,occurred_on,category_id,created_at")
+      .select("id,title,notes,amount,gst_rate,type,occurred_on,category_id,created_at")
       .single();
 
     if (error) {

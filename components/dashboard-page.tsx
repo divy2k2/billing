@@ -52,7 +52,7 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
     const response = await fetch("/api/export");
 
     if (!response.ok) {
-      showToast("We couldn't export your records.", "error");
+      showToast("We couldn't export your statement.", "error");
       setExporting(false);
       return;
     }
@@ -61,11 +61,11 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `billing-history-${new Date().toISOString().slice(0, 10)}.pdf`;
+    link.download = `financial-statement-${new Date().toISOString().slice(0, 10)}.pdf`;
     link.click();
     URL.revokeObjectURL(url);
     setExporting(false);
-    showToast("Your PDF export is ready.");
+    showToast("Your financial statement is ready.");
   }
 
   return (
@@ -80,7 +80,7 @@ export function DashboardPage({ initialData }: DashboardPageProps) {
         </div>
         <div className="hero-actions">
           <button className="button secondary" onClick={exportPdf} disabled={exporting}>
-            {exporting ? "Preparing PDF..." : "Download PDF"}
+            {exporting ? "Preparing Statement..." : "Download Statement"}
           </button>
           <button className="button ghost" onClick={refreshPage} disabled={refreshing}>
             {refreshing ? "Refreshing..." : "Refresh"}
