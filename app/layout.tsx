@@ -4,7 +4,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
-  title: "Gayatri Plywood & Hardware | Plumbing Shop in Surat",
+  title: "Gayatri Plywood & Hardware | Plumbing Shop in Ahmedabad",
   description: "Professional plumbing, pipe fitting, and hardware services in Ahmedabad. Book your plumber today for reliable repairs and installations."
 };
 
