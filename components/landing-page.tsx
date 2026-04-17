@@ -34,7 +34,6 @@ export function LandingPage() {
       <section className="hero-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="hero-content text-center animate-fade-in-up">
-            <p className="eyebrow">Trusted Plumbing & Hardware Partner</p>
             <h1 className="hero-title" style={{ marginBottom: '1rem' }}>
               Gayatri Plywood and Hardware
             </h1>
