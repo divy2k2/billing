@@ -5,6 +5,3 @@ node_modules
 dist
 coverage
 *.tsbuildinfo
-
-# Ignore untracked trusted image assets if you do not want to commit them
-public/images/
