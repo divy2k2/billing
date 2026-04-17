@@ -57,8 +57,22 @@ export function LandingPage() {
           <p className="eyebrow" style={{ marginBottom: '1rem' }}>Our Latest & Top Rated Brands</p>
           <div className="brand-carousel">
             <div className="brand-marquee-content">
-              {['1-1.png', '2-1.png', '3-1.png', '4-1.png', '5-1.png', '6.png', '7.png', '8.png', '9.png', '10.png', '1-1.png', '2-1.png', '3-1.png', '4-1.png', '5-1.png'].map((img, i) => (
-                <img key={i} src={`/images/trusted/${img}`} alt={`Brand ${i+1}`} className="brand-logo" />
+              {[
+                { file: '1-1.png', label: 'Assco' },
+                { file: '2-1.png', label: 'Osaka' },
+                { file: '3-1.png', label: 'Hindware' },
+                { file: '4-1.png', label: 'Cera' },
+                { file: '5-1.png', label: 'Astral Pipes' },
+                { file: '6.png', label: 'FinOlex' },
+                { file: '7.png', label: 'Supreme' },
+                { file: '8.png', label: 'Nexa' },
+                { file: '9.png', label: 'Veda' },
+                { file: '10.png', label: 'Apex' }
+              ].map((brand, i) => (
+                <div key={i} className="brand-item">
+                  <img src={`/images/trusted/${brand.file}`} alt={brand.label} className="brand-logo" />
+                  <span className="brand-label">{brand.label}</span>
+                </div>
               ))}
             </div>
           </div>
