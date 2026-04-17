@@ -204,7 +204,7 @@ export function LandingPage() {
             </div>
             <div className="premium-card contact-card">
               <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Location</h3>
-              <p>Main Market, Ahmedabad<br />Near the plumbing warehouse.</p>
+              <p>13, Sattadhar Complex, near Hirabag Society, CP Nagar 2, <br />Ghatlodiya, Ahmedabad, Gujarat 380061</p>
             </div>
           </div>
         </div>
