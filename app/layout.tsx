@@ -3,8 +3,8 @@ import { ToastProvider } from "@/components/toast-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Lilavanti Enterprise",
-  description: "A streamlined finance operations workspace for Lilavanti Enterprise."
+  title: "Gayatri Plywood and Hardware",
+  description: "Professional plumbing, pipe fitting, and hardware services. Book your plumber today for reliable repairs and installations."
 };
 
 export default function RootLayout({

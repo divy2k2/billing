@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { AuthCard } from "@/components/auth-card";
-import { getAdminEmail, isAdminEmail } from "@/lib/admin";
-import { getCurrentUser } from "@/lib/server-data";
+import { getAdminEmail } from "@/lib/admin";
 
 type AuthPageProps = {
   searchParams?: Promise<{
@@ -10,13 +9,8 @@ type AuthPageProps = {
 };
 
 export default async function AuthPage({ searchParams }: AuthPageProps) {
-  const user = await getCurrentUser();
   const params = searchParams ? await searchParams : undefined;
   const adminEmail = getAdminEmail();
-
-  if (user && isAdminEmail(user.email) && !params?.error) {
-    redirect("/");
-  }
 
   return (
     <main className="auth-page">
@@ -27,11 +21,11 @@ export default async function AuthPage({ searchParams }: AuthPageProps) {
       </div>
       <section className="auth-stage">
         <div className="auth-hero">
-          <p className="eyebrow">Lilavanti Enterprise</p>
-          <h1>Finance, Refined.</h1>
+          <p className="eyebrow">Gayatri Plywood and Hardware</p>
+          <h1>Admin Access</h1>
           <p className="muted">
-            This workspace is reserved for a single administrator. Authorized email:
-            {" "}
+            This admin panel is for managing service bookings and business operations.
+            Authorized email: {" "}
             <strong>{adminEmail || "configure ADMIN_EMAIL first"}</strong>
           </p>
         </div>

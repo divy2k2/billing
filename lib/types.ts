@@ -1,56 +1,40 @@
-export type EntryType = "income" | "expense";
-
-export type Category = {
-  id: string;
-  name: string;
-  type: EntryType;
-  color: string;
-  created_at?: string;
-  user_id?: string;
-};
-
-export type Entry = {
-  id: string;
+export interface Product {
+  id: number;
+  category: string;
   title: string;
-  notes: string | null;
-  amount: number;
-  gst_rate?: number;
-  type: EntryType;
-  occurred_on: string;
-  category_id: string;
-  created_at?: string;
-  user_id?: string;
-  category?: Category | Category[] | null;
-};
+  snippet: string;
+  specs: string;
+  image: string;
+  price: string;
+}
 
-export type DashboardSummary = {
-  income: number;
-  expense: number;
-  balance: number;
-  savingsRate: number;
-  monthlyIncome: number;
-  monthlyExpense: number;
-  monthly: Array<{
-    month: string;
-    income: number;
-    expense: number;
-  }>;
-  weeklyTrend: Array<{
-    date: string;
-    label: string;
-    currentNet: number;
-    previousNet: number;
-  }>;
-  weekComparison: {
-    currentIncome: number;
-    currentExpense: number;
-    previousIncome: number;
-    previousExpense: number;
-  };
-  byCategory: Array<{
-    category: string;
-    total: number;
-    type: EntryType;
-    color: string;
-  }>;
-};
+export interface Plumber {
+  id: number;
+  name: string;
+  photo: string;
+  specialization: string;
+  experience: string;
+  rating: number;
+  completedJobs: number;
+  available: boolean;
+  description: string;
+}
+
+export interface Booking {
+  id: string;
+  name?: string;
+  customer_name?: string;
+  phone: string;
+  email?: string;
+  service?: string;
+  service_type?: string;
+  preferred_date?: string;
+  preferred_time?: string;
+  description?: string;
+  status: string;
+  booking_type: string;
+  plumber_id?: number;
+  plumber_name?: string;
+  address?: string;
+  created_at: string;
+}
