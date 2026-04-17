@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ToastProvider } from "@/components/toast-provider";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Gayatri Plywood and Hardware",
